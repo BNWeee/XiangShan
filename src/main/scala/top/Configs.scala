@@ -317,3 +317,61 @@ class DefaultConfig(n: Int = 1) extends Config(
     ++ new WithNKBL1D(64)
     ++ new BaseConfig(n)
 )
+
+class WithNKBL2_1
+(
+  n: Int,
+  ways: Int = 8,
+  inclusive: Boolean = true,
+  banks: Int = 1,
+  alwaysReleaseData: Boolean = false
+) extends Config((site, here, up) => {
+  case XSTileKey =>
+    val upParams = up(XSTileKey)
+    val l2sets = n * 1024 / banks / ways / 64
+    upParams.map(p => p.copy(
+      L2CacheParamsOpt = Some(HCCacheParameters(
+        name = "L2",
+        level = 2,
+        ways = ways,
+        sets = l2sets,
+        inclusive = inclusive,
+        alwaysReleaseData = alwaysReleaseData,
+        clientCaches = Seq(CacheParameters(
+           "dcache",
+           // sets = (p.dcacheParametersOpt.get.nSets + p.icacheParameters.nSets) / banks,
+           sets = 512 / banks,
+           // ways = p.dcacheParametersOpt.get.nWays,
+           ways = 6,
+           // blockGranularity = log2Ceil((p.dcacheParametersOpt.get.nSets + p.icacheParameters.nSets) / banks),
+           blockGranularity = log2Ceil(512 / banks),
+           aliasBitsOpt = p.dcacheParametersOpt.get.aliasBitsOpt
+        )),
+        reqField = Seq(PreferCacheField()),
+        echoField = Seq(DirtyField()),
+        prefetch = Some(huancun.prefetch.PrefetchReceiverParams()),
+        enablePerf = true,
+        sramDepthDiv = 2,
+        tagECC = None,
+        dataECC = None,
+        hasShareBus = true,
+        simulation = !site(DebugOptionsKey).FPGAPlatform
+      )),
+      L2NBanks = banks
+    ))
+})
+
+
+class SpecConfigDcache32(n: Int = 1) extends Config(
+  new WithNKBL3(2 * 1024, inclusive = false, banks = 4, ways = 4)
+    ++ new WithNKBL2_1(256, inclusive = false, banks = 4, alwaysReleaseData = true)
+    ++ new WithNKBL1D(32, ways = 8)
+    ++ new BaseConfig(n)
+)
+
+class SpecConfigDcache64(n: Int = 1) extends Config(
+  new WithNKBL3(2 * 1024, inclusive = false, banks = 4, ways = 4)
+    ++ new WithNKBL2(256, inclusive = false, banks = 4, alwaysReleaseData = true)
+    ++ new WithNKBL1D(64)
+    ++ new BaseConfig(n)
+)
