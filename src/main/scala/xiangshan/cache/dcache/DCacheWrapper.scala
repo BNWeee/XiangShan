@@ -54,7 +54,8 @@ case class DCacheParameters
   // cache alias will happen,
   // we need to avoid this by recoding additional bits in L2 cache
   val setBytes = nSets * blockBytes
-  val aliasBitsOpt = if(setBytes > pageSize) Some(log2Ceil(setBytes / pageSize)) else None
+  // val aliasBitsOpt = if(setBytes > pageSize) Some(log2Ceil(setBytes / pageSize)) else None
+  val aliasBitsOpt = Some(2)
   val reqFields: Seq[BundleFieldBase] = Seq(
     PrefetchField(),
     PreferCacheField()

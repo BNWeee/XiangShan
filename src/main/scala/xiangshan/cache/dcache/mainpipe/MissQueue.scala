@@ -420,7 +420,8 @@ class MissEntry(edge: TLEdgeOut)(implicit p: Parameters) extends DCacheModule {
   )._2
   io.mem_acquire.bits := Mux(full_overwrite, acquirePerm, acquireBlock)
   // resolve cache alias by L2
-  io.mem_acquire.bits.user.lift(AliasKey).foreach( _ := req.vaddr(13, 12))
+  // io.mem_acquire.bits.user.lift(AliasKey).foreach( _ := req.vaddr(13, 12))
+  io.mem_acquire.bits.user.lift(AliasKey).foreach( _ := Cat(0.U(1.W), req.vaddr(12)))
   // trigger prefetch
   io.mem_acquire.bits.user.lift(PrefetchKey).foreach(_ := Mux(io.l2_pf_store_only, req.isStore, true.B))
   // prefer not to cache data in L2 by default
@@ -478,7 +479,8 @@ class MissEntry(edge: TLEdgeOut)(implicit p: Parameters) extends DCacheModule {
   }
   refill.meta.coh := ClientMetadata(missCohGen(req.cmd, grant_param, isDirty))
   refill.error := error
-  refill.alias := req.vaddr(13, 12) // TODO
+  // refill.alias := req.vaddr(13, 12) // TODO
+  refill.alias := Cat(0.U(1.W), req.vaddr(12))
 
   io.main_pipe_req.valid := !s_mainpipe_req && w_grantlast
   io.main_pipe_req.bits := DontCare

@@ -345,7 +345,7 @@ class WithNKBL2_1
            ways = 6,
            // blockGranularity = log2Ceil((p.dcacheParametersOpt.get.nSets + p.icacheParameters.nSets) / banks),
            blockGranularity = log2Ceil(512 / banks),
-           aliasBitsOpt = p.dcacheParametersOpt.get.aliasBitsOpt
+           aliasBitsOpt = Some(2)
         )),
         reqField = Seq(PreferCacheField()),
         echoField = Seq(DirtyField()),
@@ -365,7 +365,7 @@ class WithNKBL2_1
 class SpecConfigDcache32(n: Int = 1) extends Config(
   new WithNKBL3(2 * 1024, inclusive = false, banks = 4, ways = 4)
     ++ new WithNKBL2_1(256, inclusive = false, banks = 4, alwaysReleaseData = true)
-    ++ new WithNKBL1D(32, ways = 8)
+    ++ new WithNKBL1D(32, ways = 4)
     ++ new BaseConfig(n)
 )
 
