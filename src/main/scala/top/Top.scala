@@ -95,6 +95,11 @@ class XSTop()(implicit p: Parameters) extends BaseXSSoc() with HasSoCParameter
     misc.plic.intnode := IntBuffer() := int
   }))
 
+  l3cacheOpt.map(_.pf_l3recv_node.map(recv =>{
+    println("Connecting L2 prefecher to L3!")
+    recv := core_with_l2(0).l2cache.get.pf_sender_opt.get
+  }))
+
   val core_rst_nodes = if(l3cacheOpt.nonEmpty && l3cacheOpt.get.rst_nodes.nonEmpty){
     l3cacheOpt.get.rst_nodes.get
   } else {

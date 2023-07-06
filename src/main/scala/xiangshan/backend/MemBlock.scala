@@ -47,8 +47,8 @@ class MemBlock(val parentName:String = "Unknown")(implicit p: Parameters) extend
 
   val dcache = LazyModule(new DCacheWrapper(parentName = parentName + "dcache_"))
   val uncache = LazyModule(new Uncache())
-  val pf_sender_opt = coreParams.prefetcher.map(_ =>
-    BundleBridgeSource(() => new PrefetchRecv)
+  val pf_sender_opt :Option[BundleBridgeSource[huancun.prefetch.l2PrefetchRecv]] = coreParams.prefetcher.map(_ =>
+    BundleBridgeSource(() => new huancun.prefetch.l2PrefetchRecv())
   )
 
   lazy val module = new MemBlockImp(this)

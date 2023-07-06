@@ -7,9 +7,12 @@
 [submodule "ready-to-run"]
 	path = ready-to-run
 	url = https://github.com/OpenXiangShan/ready-to-run
-[submodule "huancun"]
-	path = huancun
-	url = https://github.com/OpenXiangshan/huancun.git
 [submodule "fudian"]
 	path = fudian
 	url = https://github.com/OpenXiangShan/fudian.git
+[submodule "CoupledL2"]
+	path = CoupledL2
+	url = https://github.com/BNWeee/CoupledL2.git
+[submodule "huancun"]
+	path = huancun
+	url = https://github.com/huangliwood/HuanCun.git
