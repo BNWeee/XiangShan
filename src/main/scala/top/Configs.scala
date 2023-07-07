@@ -272,6 +272,7 @@ class WithNKBL3(n: Int, ways: Int = 8, inclusive: Boolean = true, banks: Int = 1
       L3CacheParamsOpt = Some(HCCacheParameters(
         name = "L3",
         level = 3,
+        tiles = tiles.size,
         ways = ways,
         sets = sets,
         inclusive = inclusive,

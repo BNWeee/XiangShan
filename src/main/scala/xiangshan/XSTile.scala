@@ -138,9 +138,7 @@ class XSTile(val parentName:String = "Unknown")(implicit p: Parameters) extends 
       misc.l2_binder.get :*= l2.node :*= TLBuffer() :*= TLBuffer() :*= misc.l1_xbar
       l2.pf_l2recv_node.map(recv => {
         println("Connecting L1 prefetcher to L2!")
-        //        recv.in.head._1.addr_valid := outer.core.memBlock.pf_sender_opt.get.out.head._1.addr_valid
-        //        recv.in.head._1.addr := outer.core.memBlock.pf_sender_opt.get.out.head._1.addr
-        recv := core.memBlock.pf_sender_opt.get
+        recv := core.memBlock.pf_send_node.get
       })
     case None =>
   }
