@@ -246,8 +246,8 @@ class WithNKBL2
         )),
         reqField = Seq(PreferCacheField()),
         echoField = Seq(DirtyField()),
-        prefetch = Some(huancun.prefetch.PrefetchReceiverParams()),
         prefetchRecv = Some(huancun.prefetch.PrefetchReceiverParams()),
+        prefetch = Some(huancun.prefetch.BOPParameters()),
         prefetchSend = Some(huancun.prefetch.PrefetchReceiverParams()),
         enablePerf = true,
         sramDepthDiv = 2,
@@ -283,7 +283,7 @@ class WithNKBL3(n: Int, ways: Int = 8, inclusive: Boolean = true, banks: Int = 1
             blockGranularity = log2Ceil(clientDirBytes / core.L2NBanks / l2params.ways / 64 / tiles.size)
           )
         },
-        prefetch = None,
+        prefetch = None,//Some(huancun.prefetch.BOPParameters()),
         prefetchRecv = Some(huancun.prefetch.PrefetchReceiverParams()),
         enablePerf = true,
         ctrl = None,
