@@ -47,8 +47,8 @@ class MemBlock(val parentName:String = "Unknown")(implicit p: Parameters) extend
 
   val dcache = LazyModule(new DCacheWrapper(parentName = parentName + "dcache_"))
   val uncache = LazyModule(new Uncache())
-  val pf_sender_opt = coreParams.prefetcher.map(_ =>
-    BundleBridgeSource(() => new PrefetchRecv)
+  val pf_send_node :Option[BundleBridgeSource[huancun.prefetch.PrefetchRecv]] = coreParams.prefetcher.map(_ =>
+    BundleBridgeSource(() => new huancun.prefetch.PrefetchRecv())
   )
 
   lazy val module = new MemBlockImp(this)
@@ -146,9 +146,9 @@ class MemBlockImp(outer: MemBlock) extends LazyModuleImp(outer)
   }
   prefetcherOpt.foreach(pf => {
     val pf_to_l2 = ValidIODelay(pf.io.pf_addr, 2)
-    outer.pf_sender_opt.get.out.head._1.addr_valid := pf_to_l2.valid
-    outer.pf_sender_opt.get.out.head._1.addr := pf_to_l2.bits
-    outer.pf_sender_opt.get.out.head._1.l2_pf_en := RegNextN(io.csrCtrl.l2_pf_enable, 2, Some(true.B))
+    outer.pf_send_node.get.out.head._1.addr_valid := pf_to_l2.valid
+    outer.pf_send_node.get.out.head._1.addr := pf_to_l2.bits
+    outer.pf_send_node.get.out.head._1.pf_en := RegNextN(io.csrCtrl.l2_pf_enable, 2, Some(true.B))
     pf.io.enable := RegNextN(io.csrCtrl.l1D_pf_enable, 2, Some(false.B))
   })
   val pf_train_on_hit = RegNextN(io.csrCtrl.l1D_pf_train_on_hit, 2, Some(true.B))
