@@ -229,7 +229,7 @@ class WithNKBL2
     upParams.map(p => p.copy(
       L2CacheParamsOpt = Some(L2Param(
         name = "L2",
-        // level = 2,
+        level = 2,
         ways = ways,
         sets = l2sets,
         // inclusive = inclusive,
@@ -249,8 +249,9 @@ class WithNKBL2
         )),
         reqField = Seq(utility.ReqSourceField()),
         echoField = Seq(huancun.DirtyField()),
-        // prefetch = Some(coupledL2.prefetch.PrefetchReceiverParams()),
-        prefetch = None
+        prefetch = Some(coupledL2.prefetch.BOPParameters()),
+        prefetchSend = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+        elaboratedTopDown = false,
         // enablePerf = true,
         // sramDepthDiv = 2,
         // tagECC = None,
@@ -319,7 +320,112 @@ class MediumConfig(n: Int = 1) extends Config(
 
 class DefaultConfig(n: Int = 1) extends Config(
   new WithNKBL3(6 * 1024, inclusive = false, banks = 4, ways = 6)
-    ++ new WithNKBL2(2 * 512, inclusive = false, banks = 4, alwaysReleaseData = true)
+    ++ new WithNKBL2(2 * 512, inclusive = true, banks = 4, alwaysReleaseData = true)
+    ++ new WithNKBL1D(64)
+    ++ new BaseConfig(n)
+)
+
+class WithNKBL2_1
+(
+  n: Int,
+  ways: Int = 8,
+  inclusive: Boolean = true,
+  banks: Int = 1,
+  alwaysReleaseData: Boolean = false
+) extends Config((site, here, up) => {
+  case XSTileKey =>
+    val upParams = up(XSTileKey)
+    val l2sets = n * 1024 / banks / ways / 64
+    upParams.map(p => p.copy(
+    L2CacheParamsOpt = Some(L2Param(
+            name = "L2",
+            level = 2,
+            ways = ways,
+            sets = l2sets,
+            // inclusive = inclusive,
+            // alwaysReleaseData = alwaysReleaseData,
+            // clientCaches = Seq(CacheParameters(
+            //   "dcache",
+            //   sets = 2 * p.dcacheParametersOpt.get.nSets / banks,
+            //   ways = p.dcacheParametersOpt.get.nWays + 2,
+            //   blockGranularity = log2Ceil(2 * p.dcacheParametersOpt.get.nSets / banks),
+            //   aliasBitsOpt = p.dcacheParametersOpt.get.aliasBitsOpt
+            // )),
+            clientCaches = Seq(L1Param(
+              "dcache",
+              sets = 2 * p.dcacheParametersOpt.get.nSets / banks,
+              ways = p.dcacheParametersOpt.get.nWays + 2,
+              aliasBitsOpt = p.dcacheParametersOpt.get.aliasBitsOpt
+            )),
+            reqField = Seq(utility.ReqSourceField()),
+            echoField = Seq(huancun.DirtyField()),
+            prefetch = Some(coupledL2.prefetch.BOPParameters()),
+            prefetchSend = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+            elaboratedTopDown = false,
+            // enablePerf = true,
+            // sramDepthDiv = 2,
+            // tagECC = None,
+            // dataECC = None,
+            // hasShareBus = false,
+            // hasMbist = false,
+            // simulation = !site(DebugOptionsKey).FPGAPlatform
+          )),
+      L2NBanks = banks
+    ))
+})
+
+class WithNKBL3_1
+(
+  n: Int, ways: Int = 8, inclusive: Boolean = true, banks: Int = 1
+) extends Config((site, here, up) => {
+  case SoCParamsKey =>
+    val sets = n * 1024 / banks / ways / 64
+    val tiles = site(XSTileKey)
+    val clientDirBytes = tiles.map{ t =>
+      t.L2NBanks * t.L2CacheParamsOpt.map(_.toCacheParams.capacity).getOrElse(0)
+    }.sum
+    up(SoCParamsKey).copy(
+      L3NBanks = banks,
+      L3CacheParamsOpt = Some(HCCacheParameters(
+        name = "L3",
+        level = 3,
+        tiles = tiles.size,
+        ways = ways,
+        sets = sets,
+        inclusive = inclusive,
+        clientCaches = tiles.map{ core =>
+          val l2params = core.L2CacheParamsOpt.get.toCacheParams
+          l2params.copy(
+            sets = 2 * clientDirBytes / core.L2NBanks / l2params.ways / 64,
+            blockGranularity = log2Ceil(clientDirBytes / core.L2NBanks / l2params.ways / 64 / tiles.size)
+          )
+        },
+        prefetchRecv = Some(huancun.prefetch.PrefetchReceiverParams()),
+        prefetch = None,
+        enablePerf = true,
+        ctrl = None,
+        sramClkDivBy2 = true,
+        sramDepthDiv = 4,
+        tagECC = None,
+        dataECC = None,
+        hasShareBus = false,
+        hasMbist = true,
+        simulation = !site(DebugOptionsKey).FPGAPlatform
+      ))
+    )
+})
+
+
+class SpecConfigDcache32(n: Int = 1) extends Config(
+  new WithNKBL3_1(2 * 1024, inclusive = false, banks = 4, ways = 4)
+    ++ new WithNKBL2_1(256, inclusive = true, banks = 4, alwaysReleaseData = true)
+    ++ new WithNKBL1D(32, ways = 4)
+    ++ new BaseConfig(n)
+)
+
+class SpecConfigDcache64(n: Int = 1) extends Config(
+  new WithNKBL3(2 * 1024, inclusive = false, banks = 4, ways = 4)
+    ++ new WithNKBL2(256, inclusive = true, banks = 4, alwaysReleaseData = true)
     ++ new WithNKBL1D(64)
     ++ new BaseConfig(n)
 )

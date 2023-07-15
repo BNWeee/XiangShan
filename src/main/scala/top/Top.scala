@@ -102,6 +102,18 @@ class XSTop()(implicit p: Parameters) extends BaseXSSoc() with HasSoCParameter
     case None =>
   }
 
+  (l3cacheOpt.get.pf_l3recv_node, core_with_l2.head.l2cache.get.pf_l2send_node) match {
+    case (Some(l3), Some(l2)) => {
+      val l3pf_RecvXbar = LazyModule(new huancun.prefetch.PrefetchReceiverXbar(NumCores))
+      for (i <- 0 until NumCores) {
+        println(s"Connecting L2 prefecher_sender_${i} to L3!")
+        l3pf_RecvXbar.inNode(i) := core_with_l2(i).l2cache.get.pf_l2send_node.get
+      }
+      l3cacheOpt.get.pf_l3recv_node.get := l3pf_RecvXbar.outNode.head
+    }
+    case (_, _) => None
+  }
+
   lazy val module = new LazyRawModuleImp(this) {
     ElaborationArtefacts.add("dts", dts)
     ElaborationArtefacts.add("graphml", graphML)
