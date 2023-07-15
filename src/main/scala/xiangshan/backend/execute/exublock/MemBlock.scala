@@ -21,7 +21,6 @@ import chisel3._
 import chisel3.util._
 import freechips.rocketchip.diplomacy.{BundleBridgeSource, LazyModule, LazyModuleImp}
 import freechips.rocketchip.tile.HasFPUParameters
-import huancun.PrefetchRecv
 import utils._
 import xiangshan._
 import xiangshan.backend.execute.exu.{ExuConfig, ExuOutputNode, ExuType}
@@ -93,7 +92,7 @@ class MemBlock(val parentName:String = "Unknown")(implicit p: Parameters) extend
   val dcache = LazyModule(new DCacheWrapper(parentName = parentName + "dcache_"))
   val uncache = LazyModule(new Uncache())
   val pf_sender_opt = coreParams.prefetcher.map(_ =>
-    BundleBridgeSource(() => new PrefetchRecv)
+    BundleBridgeSource(() => new coupledL2.prefetch.l2PrefetchRecv)
   )
 
   lazy val module = new MemBlockImp(this)
@@ -202,7 +201,7 @@ class MemBlockImp(outer: MemBlock) extends BasicExuBlockImp(outer)
     val pf_to_l2 = Pipe(pf.io.pf_addr, 2)
     outer.pf_sender_opt.get.out.head._1.addr_valid := pf_to_l2.valid
     outer.pf_sender_opt.get.out.head._1.addr := pf_to_l2.bits
-    outer.pf_sender_opt.get.out.head._1.l2_pf_en := RegNextN(io.csrCtrl.l2_pf_enable, 2, Some(true.B))
+    outer.pf_sender_opt.get.out.head._1.pf_en := RegNextN(io.csrCtrl.l2_pf_enable, 2, Some(true.B))
     pf.io.enable := RegNextN(io.csrCtrl.l1D_pf_enable, 2, Some(false.B))
   })
   private val pf_train_on_hit = RegNextN(io.csrCtrl.l1D_pf_train_on_hit, 2, Some(true.B))

@@ -249,8 +249,8 @@ class WithNKBL2
         )),
         reqField = Seq(utility.ReqSourceField()),
         echoField = Seq(huancun.DirtyField()),
-        prefetch = Some(coupledL2.prefetch.BOPParameters()),
-        prefetchSend = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+        prefetch = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+        prefetchSend = None,//Some(coupledL2.prefetch.PrefetchReceiverParams()),
         elaboratedTopDown = false,
         // enablePerf = true,
         // sramDepthDiv = 2,
@@ -286,6 +286,7 @@ class WithNKBL3(n: Int, ways: Int = 8, inclusive: Boolean = true, banks: Int = 1
             blockGranularity = log2Ceil(clientDirBytes / core.L2NBanks / l2params.ways / 64 / tiles.size)
           )
         },
+        prefetch = None,
         enablePerf = true,
         ctrl = None,
         sramClkDivBy2 = true,
@@ -359,8 +360,8 @@ class WithNKBL2_1
             )),
             reqField = Seq(utility.ReqSourceField()),
             echoField = Seq(huancun.DirtyField()),
-            prefetch = Some(coupledL2.prefetch.BOPParameters()),
-            prefetchSend = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+            prefetch = Some(coupledL2.prefetch.PrefetchReceiverParams()),
+            prefetchSend = None,//Some(coupledL2.prefetch.PrefetchReceiverParams()),
             elaboratedTopDown = false,
             // enablePerf = true,
             // sramDepthDiv = 2,
@@ -400,7 +401,7 @@ class WithNKBL3_1
             blockGranularity = log2Ceil(clientDirBytes / core.L2NBanks / l2params.ways / 64 / tiles.size)
           )
         },
-        prefetchRecv = Some(huancun.prefetch.PrefetchReceiverParams()),
+        prefetchRecv = None,//Some(huancun.prefetch.PrefetchReceiverParams()),
         prefetch = None,
         enablePerf = true,
         ctrl = None,
