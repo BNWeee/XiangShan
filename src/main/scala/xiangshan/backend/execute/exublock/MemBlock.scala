@@ -250,9 +250,6 @@ class MemBlockImp(outer: MemBlock) extends BasicExuBlockImp(outer)
       }
     case None => 
   }
-  println("MEMBLOCK DEBUG")
-  println(coreParams.prefetcher)
-  println(prefetcherOpt)
   private val pf_train_on_hit = RegNextN(io.csrCtrl.l1D_pf_train_on_hit, 2, Some(true.B))
 
   loadUnits.zipWithIndex.map(x => x._1.suggestName("LoadUnit_"+x._2))

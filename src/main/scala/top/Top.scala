@@ -85,10 +85,6 @@ class XSTop()(implicit p: Parameters) extends BaseXSSoc() with HasSoCParameter
   l3cacheOpt.map(_.intnode.map(int => {
     misc.plic.intnode := IntBuffer() := int
   }))
-  println(s"NODES XSTOP L2-L3! ")
-  println(core_with_l2.head.l2cache.get.spp_send_node)
-  println(core_with_l2.head.l2cache.get.pf_recv_node)
-  println(l3cacheOpt.get.pf_l3recv_node.get)
     
   (core_with_l2.head.l2cache.get.spp_send_node, core_with_l2.last.l2cache.get.spp_send_node) match{
     case(Some(l2_0),Some(l2_1))=>{

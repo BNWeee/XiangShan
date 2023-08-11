@@ -147,9 +147,6 @@ class XSTile(val parentName:String = "Unknown")(implicit p: Parameters) extends 
           println("Connecting L1 prefetcher to L2!")
           core.exuBlock.memoryBlock.pf_sender_opt.map(sender => l2_node := sender)
       }
-      println(s"NODES XSTILE L1-L2! ")
-      println(l2.pf_recv_node)
-      println(core.exuBlock.memoryBlock.pf_sender_opt)
     case None =>
   }
 
