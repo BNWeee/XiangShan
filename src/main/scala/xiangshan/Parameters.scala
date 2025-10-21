@@ -150,7 +150,7 @@ case class XSCoreParameters
   RabCommitWidth: Int = 6,
   MaxUopSize: Int = 65,
   EnableRenameSnapshot: Boolean = true,
-  RenameSnapshotNum: Int = 4,
+  RenameSnapshotNum: Int = 2,
   FtqSize: Int = 48,
   EnableLoadFastWakeUp: Boolean = true, // NOTE: not supported now, make it false
   IntLogicRegs: Int = 32,
@@ -172,9 +172,9 @@ case class XSCoreParameters
   StoreQueueNWriteBanks: Int = 8, // NOTE: make sure that StoreQueueSize is divided by StoreQueueNWriteBanks
   StoreQueueForwardWithMask: Boolean = true,
   VlsQueueSize: Int = 8,
-  RobSize: Int = 160,
-  RabSize: Int = 256,
-  VTypeBufferSize: Int = 64, // used to reorder vtype
+  RobSize: Int = 96,
+  RabSize: Int = 96,
+  VTypeBufferSize: Int = 16, // used to reorder vtype
   IssueQueueSize: Int = 16,
   IssueQueueCompEntrySize: Int = 12,
   intPreg: PregParams = IntPregParams(
