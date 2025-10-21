@@ -96,7 +96,7 @@ case class XSCoreParameters
   EnableGHistDiff: Boolean = true,
   EnableCommitGHistDiff: Boolean = true,
   UbtbSize: Int = 256,
-  FtbSize: Int = 2048,
+  FtbSize: Int = 4096,
   FtbWays: Int = 4,
   FtbTagLength: Int = 20,
   RasSize: Int = 16,
@@ -105,16 +105,13 @@ case class XSCoreParameters
   CacheLineSize: Int = 512,
   TageTableInfos: Seq[Tuple3[Int,Int,Int]] =
   //       Sets  Hist   Tag
-    Seq(( 4096,    8,    8),
-        ( 4096,   13,    8),
-        ( 4096,   32,    8),
-        ( 4096,  119,    8)),
+    Seq(( 2048,    8,    8),
+        ( 2048,   13,    8),
+        ( 2048,   32,    8),
+        ( 2048,  119,    8)),
   ITTageTableInfos: Seq[Tuple3[Int,Int,Int]] =
   //      Sets  Hist   Tag
-    Seq(( 256,    4,    9),
-        ( 256,    8,    9),
-        ( 512,   13,    9),
-        ( 512,   16,    9),
+    Seq(( 256,    8,    9),
         ( 512,   32,    9)),
   SCNRows: Int = 512,
   SCNTables: Int = 4,
@@ -154,7 +151,7 @@ case class XSCoreParameters
   MaxUopSize: Int = 65,
   EnableRenameSnapshot: Boolean = true,
   RenameSnapshotNum: Int = 4,
-  FtqSize: Int = 64,
+  FtqSize: Int = 48,
   EnableLoadFastWakeUp: Boolean = true, // NOTE: not supported now, make it false
   IntLogicRegs: Int = 32,
   FpLogicRegs: Int = 32 + 1 + 1, // 1: I2F, 1: stride
