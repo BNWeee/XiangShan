@@ -143,8 +143,8 @@ case class XSCoreParameters
   ICacheForceDataECCError: Boolean = false,
   IBufSize: Int = 48,
   IBufNBank: Int = 6, // IBuffer bank amount, should divide IBufSize
-  DecodeWidth: Int = 6,
-  RenameWidth: Int = 6,
+  DecodeWidth: Int = 4,
+  RenameWidth: Int = 4,
   CommitWidth: Int = 8,
   RobCommitWidth: Int = 8,
   RabCommitWidth: Int = 6,
