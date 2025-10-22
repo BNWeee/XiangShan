@@ -49,11 +49,11 @@ case class L2TLBParameters
 (
   name: String = "l2tlb",
   // l3
-  l3Size: Int = 16,
+  l3Size: Int = 8,
   l3Associative: String = "fa",
   l3Replacer: Option[String] = Some("plru"),
   // l2
-  l2Size: Int = 16,
+  l2Size: Int = 8,
   l2Associative: String = "fa",
   l2Replacer: Option[String] = Some("plru"),
   // l1
@@ -67,7 +67,7 @@ case class L2TLBParameters
   l0ReservedBits: Int = 3,
   l0Replacer: Option[String] = Some("setplru"),
   // sp
-  spSize: Int = 16,
+  spSize: Int = 8,
   spReplacer: Option[String] = Some("plru"),
   // hash asid width
   hashAsidWidth: Int = 3,

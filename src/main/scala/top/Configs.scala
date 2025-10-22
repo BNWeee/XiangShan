@@ -565,3 +565,10 @@ class FpgaDiffMinimalConfig(n: Int = 1) extends Config(
     )
   })
 )
+
+class APConfig(n: Int = 1) extends Config(
+  L3CacheConfig("16MB", inclusive = false, banks = 4, ways = 16)
+    ++ L2CacheConfig("256KB", inclusive = true, banks = 4)
+    ++ WithNKBL1D(64, ways = 4)
+    ++ new BaseConfig(n)
+)

@@ -270,7 +270,7 @@ case class XSCoreParameters
   ipmpPortNum: Int = 2 * ICacheParameters().PortNumber + 1,
   ldtlbParameters: TLBParameters = TLBParameters(
     name = "ldtlb",
-    NWays = 48,
+    NWays = 24,
     outReplace = false,
     partialStaticPMP = true,
     outsideRecvFlush = true,
@@ -279,7 +279,7 @@ case class XSCoreParameters
   ),
   sttlbParameters: TLBParameters = TLBParameters(
     name = "sttlb",
-    NWays = 48,
+    NWays = 24,
     outReplace = false,
     partialStaticPMP = true,
     outsideRecvFlush = true,
@@ -297,7 +297,7 @@ case class XSCoreParameters
   ),
   pftlbParameters: TLBParameters = TLBParameters(
     name = "pftlb",
-    NWays = 48,
+    NWays = 16,
     outReplace = false,
     partialStaticPMP = true,
     outsideRecvFlush = true,
