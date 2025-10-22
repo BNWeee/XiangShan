@@ -141,8 +141,8 @@ case class XSCoreParameters
   },
   ICacheForceMetaECCError: Boolean = false,
   ICacheForceDataECCError: Boolean = false,
-  IBufSize: Int = 48,
-  IBufNBank: Int = 6, // IBuffer bank amount, should divide IBufSize
+  IBufSize: Int = 32,
+  IBufNBank: Int = 4, // IBuffer bank amount, should divide IBufSize
   DecodeWidth: Int = 4,
   RenameWidth: Int = 4,
   CommitWidth: Int = 8,
