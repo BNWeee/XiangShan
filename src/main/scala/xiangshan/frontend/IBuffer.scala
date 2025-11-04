@@ -213,7 +213,7 @@ class IBuffer(implicit p: Parameters) extends XSModule with HasCircularQueuePtrH
 
   // The number of decode accepted insts.
   // Since decode promises accepting insts in order, use priority encoder to simplify the accumulation.
-  private val numOut = Wire(UInt(log2Ceil(DecodeWidth).W))
+  private val numOut = Wire(UInt(log2Ceil(DecodeWidth + 1).W))
   private val numDeq = numOut
 
   // counter current number of valid
