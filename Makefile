@@ -195,7 +195,7 @@ override SIM_ARGS += --with-constantin
 endif
 
 # emu for the release version
-RELEASE_ARGS += --fpga-platform --disable-all --remove-assert --reset-gen --firtool-opt --ignore-read-enable-mem
+RELEASE_ARGS += --fpga-platform --disable-all --reset-gen --firtool-opt --ignore-read-enable-mem
 DEBUG_ARGS   += --enable-difftest
 override PLDM_ARGS += --enable-difftest
 ifeq ($(RELEASE),1)

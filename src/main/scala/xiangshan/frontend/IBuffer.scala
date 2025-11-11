@@ -237,7 +237,7 @@ class IBuffer(implicit p: Parameters) extends XSModule with HasCircularQueuePtrH
   }.otherwise {
     numOut := 0.U
   }
-  val numBypass = Wire(UInt(log2Ceil(DecodeWidth).W))
+  val numBypass = Wire(UInt(log2Ceil(DecodeWidth + 1).W))
   // when using bypass, bypassed entries do not enqueue
   when(useBypass) {
     when(numFromFetch >= DecodeWidth.U) {
@@ -332,9 +332,9 @@ class IBuffer(implicit p: Parameters) extends XSModule with HasCircularQueuePtrH
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Dequeue
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  val outputEntriesValidNumNext = Wire(UInt(log2Ceil(DecodeWidth).W))
+  val outputEntriesValidNumNext = Wire(UInt(log2Ceil(DecodeWidth + 1).W))
   XSError(outputEntriesValidNumNext > DecodeWidth.U, "Ibuffer: outputEntriesValidNumNext > DecodeWidth.U")
-  val validVec = UIntToMask(outputEntriesValidNumNext(log2Ceil(DecodeWidth) - 1, 0), DecodeWidth)
+  val validVec = UIntToMask(outputEntriesValidNumNext, DecodeWidth)
   when(decodeCanAccept) {
     outputEntriesValidNumNext := Mux(useBypass, numBypass, numDeq)
   }.elsewhen(outputEntriesIsNotFull) {
@@ -362,8 +362,7 @@ class IBuffer(implicit p: Parameters) extends XSModule with HasCircularQueuePtrH
       val validIdx = Mux(
         idx.asUInt >= deqBankPtr.value,
         idx.asUInt - deqBankPtr.value,
-        ((idx + IBufNBank).asUInt - deqBankPtr.value)(log2Ceil(IBufNBank) - 1, 0)
-      )(log2Ceil(DecodeWidth) - 1, 0)
+        ((idx + IBufNBank).asUInt - deqBankPtr.value))
       val bankAdvance = numOut > validIdx
       ptrNext := Mux(bankAdvance, ptr + 1.U, ptr)
     }

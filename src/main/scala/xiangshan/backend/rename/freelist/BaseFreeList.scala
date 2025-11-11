@@ -23,6 +23,7 @@ import xiangshan._
 import xiangshan.backend.rename.SnapshotGenerator
 import utils._
 import utility._
+import scala.math.max
 
 
 abstract class BaseFreeList(size: Int, numLogicRegs:Int = 32)(implicit p: Parameters) extends XSModule with HasCircularQueuePtrHelper {
@@ -65,8 +66,8 @@ abstract class BaseFreeList(size: Int, numLogicRegs:Int = 32)(implicit p: Parame
   val archHeadPtr = RegInit(FreeListPtr(false, 0))
   XSError(headPtr.toOH =/= headPtrOH, p"wrong one-hot reg between $headPtr and $headPtrOH")
   val headPtrOHShift = CircularShift(headPtrOH)
-  // may shift [0, RenameWidth] steps
-  val headPtrOHVec = VecInit.tabulate(RenameWidth + 1)(headPtrOHShift.left)
+  // may shift [0, max(RenameWidth, RabCommitWidth)] steps
+  val headPtrOHVec = VecInit.tabulate(max(RenameWidth, RabCommitWidth) + 1)(headPtrOHShift.left)
 
   val snapshots = SnapshotGenerator(headPtr, io.snpt.snptEnq, io.snpt.snptDeq, io.redirect, io.snpt.flushVec)
 
